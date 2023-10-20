@@ -164,9 +164,15 @@ class ReachabilityAir3DSource(Dataset):
         
         self.velocity = velocity
         self.omega_max = omega_max
-        self.collisionR = collisionR
 
-        self.alpha_angle = angle_alpha * math.pi
+        self.alpha = {}
+        self.alpha['x'] = 4.0
+        self.alpha['y'] = 4.0
+        self.alpha['th'] = 1.1*math.pi
+        self.alpha['time'] = 20
+
+        self.collisionR = collisionR/self.alpha['x'] 
+
 
         self.num_states = 3
 

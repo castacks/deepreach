@@ -37,7 +37,7 @@ p.add_argument('--model', type=str, default='sine', required=False, choices=['si
 p.add_argument('--mode', type=str, default='mlp', required=False, choices=['mlp', 'rbf', 'pinn'],
                help='Whether to use uniform velocity parameter')
 p.add_argument('--tMin', type=float, default=0.0, required=False, help='Start time of the simulation')
-p.add_argument('--tMax', type=float, default=0.5, required=False, help='End time of the simulation')
+p.add_argument('--tMax', type=float, default=1.0, required=False, help='End time of the simulation')
 p.add_argument('--num_hl', type=int, default=3, required=False, help='The number of hidden layers')
 p.add_argument('--num_nl', type=int, default=512, required=False, help='Number of neurons per hidden layer.')
 p.add_argument('--pretrain_iters', type=int, default=2000, required=False, help='Number of pretrain iterations')
@@ -45,10 +45,10 @@ p.add_argument('--counter_start', type=int, default=-1, required=False, help='De
 p.add_argument('--counter_end', type=int, default=-1, required=False, help='Defines the linear step for curriculum training starting from the initial time')
 p.add_argument('--num_src_samples', type=int, default=1000, required=False, help='Number of source samples at each time step')
 
-p.add_argument('--velocity', type=float, default=0.6, required=False, help='Speed of the dubins car')
-p.add_argument('--omega_max', type=float, default=1.1, required=False, help='Turn rate of the car')
+p.add_argument('--velocity', type=float, default=0.01, required=False, help='Speed of the dubins car')
+p.add_argument('--omega_max', type=float, default=0.0, required=False, help='Turn rate of the car')
 p.add_argument('--angle_alpha', type=float, default=1.0, required=False, help='Angle alpha coefficient.')
-p.add_argument('--collisionR', type=float, default=0.25, required=False, help='Collision radisu between vehicles')
+p.add_argument('--collisionR', type=float, default=0.01, required=False, help='Collision radisu between vehicles')
 p.add_argument('--minWith', type=str, default='none', required=False, choices=['none', 'zero', 'target'], help='BRS vs BRT computation')
 
 p.add_argument('--clip_grad', default=0.0, type=float, help='Clip gradient.')

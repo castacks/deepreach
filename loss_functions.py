@@ -72,7 +72,7 @@ def initialize_hji_air3D(dataset, minWith):
     # The dynamics parameters
     velocity = dataset.velocity
     omega_max = dataset.omega_max
-    alpha_angle = dataset.alpha_angle
+    alpha = dataset.alpha
 
     def hji_air3D(model_output, gt):
         source_boundary_values = gt['source_boundary_values']
@@ -85,12 +85,19 @@ def initialize_hji_air3D(dataset, minWith):
         dudt = du[..., 0, 0]
         dudx = du[..., 0, 1:]
 
-        x_theta = x[..., 3] * 1.0
+        x_u = x * 1.0
+        x_u[..., 1] = x_u[..., 1] * alpha['x'] 
+        x_u[..., 2] = x_u[..., 2] * alpha['y'] 
+        x_u[..., 3] = x_u[..., 3] * alpha['th'] 
+
+        # x_theta = x[..., 3] * 1.0
 
         # Scale the costate for theta appropriately to align with the range of [-pi, pi]
-        dudx[..., 2] = dudx[..., 2] / alpha_angle
+        dudx[..., 0] = dudx[..., 0] / alpha['x']
+        dudx[..., 1] = dudx[..., 1] / alpha['y']
+        dudx[..., 2] = dudx[..., 2] / alpha['th']
         # Scale the coordinates
-        x_theta = alpha_angle * x_theta
+        # x_theta = alpha['th'] * x_theta
 
         # Air3D dynamics
         # \dot x    = -v_a + v_b \cos \psi + a y
@@ -98,10 +105,12 @@ def initialize_hji_air3D(dataset, minWith):
         # \dot \psi = b - a
 
         # Compute the hamiltonian for the ego vehicle
-        ham = omega_max * torch.abs(dudx[..., 0] * x[..., 2] - dudx[..., 1] * x[..., 1] - dudx[..., 2])  # Control component
+        ham = omega_max * torch.abs(dudx[..., 0] * x_u[..., 2] - dudx[..., 1] * x_u[..., 1] - dudx[..., 2])  # Control component
         ham = ham - omega_max * torch.abs(dudx[..., 2])  # Disturbance component
-        ham = ham + (velocity * (torch.cos(x_theta) - 1.0) * dudx[..., 0]) + (velocity * torch.sin(x_theta) * dudx[..., 1])  # Constant component
+        ham = ham + (velocity * (torch.cos(x_u[..., 3]) - 1.0) * dudx[..., 0]) + (velocity * torch.sin(x_u[..., 3]) * dudx[..., 1])  # Constant component
 
+        # Effect of time factor
+        ham = ham * alpha['time']
         # If we are computing BRT then take min with zero
         if minWith == 'zero':
             ham = torch.clamp(ham, max=0.0)

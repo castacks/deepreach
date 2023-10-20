@@ -35,10 +35,10 @@ def train(model, train_dataloader, epochs, lr, steps_til_summary, epochs_til_che
         assert(start_epoch == checkpoint['epoch'])
     else:
         # Start training from scratch
-        if os.path.exists(model_dir):
-            val = input("The model directory %s exists. Overwrite? (y/n)"%model_dir)
-            if val == 'y':
-                shutil.rmtree(model_dir)
+        # if os.path.exists(model_dir):
+        #     val = input("The model directory %s exists. Overwrite? (y/n)"%model_dir)
+        #     if val == 'y':
+        #         shutil.rmtree(model_dir)
         os.makedirs(model_dir)
 
     summaries_dir = os.path.join(model_dir, 'summaries')

@@ -70,7 +70,7 @@ def val_fn_BRS(model):
       state_coords[:, 2] = state_coords[:, 2] / (angle_alpha * math.pi)
       time_coords = torch.ones(state_coords.shape[0], 1) * times[i]
       coords = torch.cat((time_coords, state_coords), dim=1)[None] 
-      
+      print(coords)
       # Compute the value function
       model_in = {'coords': coords.cuda()}
       model_out = model(model_in)
